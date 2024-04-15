@@ -1,5 +1,5 @@
 import { accounts } from "./accounts";
-import { initaliserAccount } from ".";
+import { initaliserAccount } from "./initaliserAccount";
 
 export function addPeopleToAccount(): any {
   return function (req: any, res: any) {

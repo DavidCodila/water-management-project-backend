@@ -6,6 +6,7 @@ import { round } from "lodash";
 import { createAccount } from "./createAccount";
 import { accounts } from "./accounts";
 import { random } from "lodash";
+import { addPeopleToAccount } from "./addPeopleToAccount";
 
 const CORPORATION_WATER_RATE = 1;
 const BOREWELL_WATER_RATE = 1.5;
@@ -22,7 +23,7 @@ var user = {
   borewellRatio: "",
 };
 
-const initaliserAccount = {
+export const initaliserAccount = {
   id: "0",
   appartmentType: "",
   corporationRatio: "",
@@ -37,37 +38,7 @@ var jsonParser = bodyParser.json();
 
 app.post("/water-accounts", jsonParser, createAccount());
 
-app.put(
-  "/water-accounts/:accountID",
-  jsonParser,
-  function (req: any, res: any) {
-    var accountToAlter = initaliserAccount;
-    for (var i = 0; i < accounts.length; i++) {
-      if (accounts[i].id === req.params.accountID) {
-        accountToAlter = accounts[i];
-      }
-    }
-    if (accountToAlter === initaliserAccount) {
-      console.log("Error with finding id");
-      return;
-    }
-    console.log(
-      "Last account in accounts: " + accounts[accounts.length - 1].id
-    );
-    console.log("Returned account ID: " + req.params.accountID + "\n");
-    console.log("Indexed account people value: " + accountToAlter.id);
-
-    //var people: number = 0;
-    //people += Number(req.body.peopleToAdd);
-    accountToAlter.people += Number(req.body.peopleToAdd);
-    console.log("account: " + accountToAlter.id);
-    res.json({
-      response:
-        "PUT request to homepage, number of people in this account is: " +
-        accountToAlter.people,
-    });
-  }
-);
+app.put("/water-accounts/:accountID", jsonParser, addPeopleToAccount());
 
 app.get(
   "/water-accounts/2131241/bill",

@@ -9,11 +9,11 @@ export function createAccount(): any {
       appartmentType: userRequestJson.appartmentType,
       corporationRatio: userRequestJson.corporationRatio,
       borewellRatio: userRequestJson.borewellRatio,
-      people: "0",
+      people: 0,
     };
     accounts.push(newAccount);
+    console.log("Created new account: " + newAccount.id + "\n");
     //resetting for new user
-    console.log(newAccount);
     res.json({ accountId: newAccount.id });
   };
 }

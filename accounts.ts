@@ -4,5 +4,5 @@ interface Account {
   appartmentType: string;
   corporationRatio: string;
   borewellRatio: string;
-  people: string;
+  people: number;
 }

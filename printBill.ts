@@ -9,14 +9,15 @@ const DAYS_IN_A_MONTH = 30;
 
 export function printBill(): any {
   return function (req: any, res: any) {
-    var accountToReadFrom = initaliserAccount;
+    var accountToReadFrom = null;
     for (var i = 0; i < accounts.length; i++) {
       if (accounts[i].id === req.params.accountID) {
         accountToReadFrom = accounts[i];
       }
     }
-    if (accountToReadFrom === initaliserAccount) {
+    if (accountToReadFrom === null) {
       console.log("Error in obtaining account for bill");
+      return;
     }
     let people = appartmentCheck(accountToReadFrom.appartmentType);
     let corporationWaterRatio = accountToReadFrom.corporationRatio;

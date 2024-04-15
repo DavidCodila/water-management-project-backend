@@ -12,8 +12,6 @@ export function createAccount(): any {
       people: 0,
     };
     accounts.push(newAccount);
-    console.log("Created new account: " + newAccount.id + "\n");
-    //resetting for new user
     res.json({ accountId: newAccount.id });
   };
 }

@@ -41,15 +41,24 @@ app.post("/water-accounts", jsonParser, createAccount());
 app.put("/water-accounts/:accountID", jsonParser, addPeopleToAccount());
 
 app.get(
-  "/water-accounts/2131241/bill",
+  "/water-accounts/:accountID/bill",
   jsonParser,
   function (req: any, res: any) {
-    billID = req.body.userID;
-    let people = appartmentCheck(user.appartmentType);
-    let corporationWaterRatio = user.corporationRatio;
+    var accountToReadFrom = initaliserAccount;
+    for (var i = 0; i < accounts.length; i++) {
+      if (accounts[i].id === req.params.accountID) {
+        accountToReadFrom = accounts[i];
+      }
+    }
+    if (accountToReadFrom === initaliserAccount) {
+      console.log("Error in obtaining account for bill");
+    }
+    //billID = req.body.userID;
+    let people = appartmentCheck(accountToReadFrom.appartmentType);
+    let corporationWaterRatio = accountToReadFrom.corporationRatio;
     let corporationContribution =
       Number(corporationWaterRatio) * CORPORATION_WATER_RATE;
-    let borewellWaterRatio = user.borewellRatio;
+    let borewellWaterRatio = accountToReadFrom.borewellRatio;
     let borewellContribution = Number(borewellWaterRatio) * BOREWELL_WATER_RATE;
     let ratioAccumulation =
       Number(corporationWaterRatio) + Number(borewellWaterRatio);
@@ -59,7 +68,11 @@ app.get(
       people * PERSONAL_WATER_ALLOWANCE * DAYS_IN_A_MONTH
     );
     let initalWaterPrice = round(initalWater * waterPricePerLiter);
-    let bill = calculateBill(initalWater, initalWaterPrice, peopleToAdd);
+    let bill = calculateBill(
+      initalWater,
+      initalWaterPrice,
+      accountToReadFrom.people
+    );
     res.json({ waterUsage: bill[0], cost: bill[1] });
   }
 );

@@ -7,7 +7,7 @@ export function addPeopleToAccount(): any {
         account.addPeople(Number(req.body.peopleToAdd));
         res.json({
           response:
-            "PUT request to homepage, number of people in this account is: " +
+            "The number of people in this account is: " +
             account.getAdditionalPeople(),
         });
       }

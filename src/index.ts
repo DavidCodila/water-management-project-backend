@@ -1,14 +1,15 @@
-var express = require("express");
-var cors = require("cors");
-var app = express();
-var bodyParser = require("body-parser");
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
 import { createAccount } from "./createAccount";
 import { addPeopleToAccount } from "./addPeopleToAccount";
 import { printBill } from "./printBill";
 
+const app = express();
+
 app.use(cors());
 
-var jsonParser = bodyParser.json();
+const jsonParser = bodyParser.json();
 
 app.post("/water-accounts", jsonParser, createAccount());
 

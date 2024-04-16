@@ -1,6 +1,5 @@
 import { round } from "lodash";
 import { accounts } from "./accounts";
-import { initaliserAccount } from "./initaliserAccount";
 
 const CORPORATION_WATER_RATE = 1;
 const BOREWELL_WATER_RATE = 1.5;
@@ -9,45 +8,30 @@ const DAYS_IN_A_MONTH = 30;
 
 export function printBill(): any {
   return function (req: any, res: any) {
-    var accountToReadFrom = null;
-    for (var i = 0; i < accounts.length; i++) {
-      if (accounts[i].id === req.params.accountID) {
-        accountToReadFrom = accounts[i];
+    for (let account of accounts) {
+      if (account.getId() === req.params.accountID) {
+        let corporationContribution =
+          Number(account.getCorporationRatio()) * CORPORATION_WATER_RATE;
+        let borewellContribution =
+          Number(account.getBorewellRatio()) * BOREWELL_WATER_RATE;
+        let ratioAccumulation =
+          Number(account.getCorporationRatio()) +
+          Number(account.getBorewellRatio());
+        let waterPricePerLiter =
+          (corporationContribution + borewellContribution) / ratioAccumulation;
+        let initalWater = round(
+          account.getInitalPeople() * PERSONAL_WATER_ALLOWANCE * DAYS_IN_A_MONTH
+        );
+        let initalWaterPrice = round(initalWater * waterPricePerLiter);
+        let bill = calculateBill(
+          initalWater,
+          initalWaterPrice,
+          account.getAdditionalPeople()
+        );
+        res.json({ waterUsage: bill[0], cost: bill[1] });
       }
     }
-    if (accountToReadFrom === null) {
-      console.log("Error in obtaining account for bill");
-      return;
-    }
-    let people = appartmentCheck(accountToReadFrom.appartmentType);
-    let corporationWaterRatio = accountToReadFrom.corporationRatio;
-    let corporationContribution =
-      Number(corporationWaterRatio) * CORPORATION_WATER_RATE;
-    let borewellWaterRatio = accountToReadFrom.borewellRatio;
-    let borewellContribution = Number(borewellWaterRatio) * BOREWELL_WATER_RATE;
-    let ratioAccumulation =
-      Number(corporationWaterRatio) + Number(borewellWaterRatio);
-    let waterPricePerLiter =
-      (corporationContribution + borewellContribution) / ratioAccumulation;
-    let initalWater = round(
-      people * PERSONAL_WATER_ALLOWANCE * DAYS_IN_A_MONTH
-    );
-    let initalWaterPrice = round(initalWater * waterPricePerLiter);
-    let bill = calculateBill(
-      initalWater,
-      initalWaterPrice,
-      accountToReadFrom.people
-    );
-    res.json({ waterUsage: bill[0], cost: bill[1] });
   };
-}
-
-function appartmentCheck(BHK_number: string) {
-  let people: number = 0;
-  if (BHK_number == "2BHK") people = 3;
-  else if (BHK_number == "3BHK") people = 5;
-  else console.log("Incorrect BHK size");
-  return people;
 }
 
 function determineTankerCost(water: number) {

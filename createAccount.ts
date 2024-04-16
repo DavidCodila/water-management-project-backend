@@ -1,17 +1,14 @@
-import { random } from "lodash";
 import { accounts } from "./accounts";
+import { Account } from "./Account";
 
 export function createAccount(): any {
   return function (req: any, res: any) {
-    var userRequestJson = req.body;
-    const newAccount = {
-      id: String(random(1, 99999)),
-      appartmentType: userRequestJson.appartmentType,
-      corporationRatio: userRequestJson.corporationRatio,
-      borewellRatio: userRequestJson.borewellRatio,
-      people: 0,
-    };
+    const newAccount = new Account(
+      req.body.appartmentType,
+      req.body.corporationRatio,
+      req.body.borewellRatio
+    );
     accounts.push(newAccount);
-    res.json({ accountId: newAccount.id });
+    res.json({ accountId: newAccount.getId() });
   };
 }

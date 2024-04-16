@@ -16,24 +16,18 @@ export function printBill(): any {
         if (account.getWaterAmount() !== 0) {
           return;
         }
-        account.addWater(
-          round(
-            account.getInitalPeople() *
-              PERSONAL_WATER_ALLOWANCE *
-              DAYS_IN_A_MONTH
-          )
-        );
 
-        let initalWaterPrice = calculateInitalWaterPrice(account);
-        account.addCost(initalWaterPrice);
-        const additionalWaterRequired = round(
-          account.getAdditionalPeople() *
-            PERSONAL_WATER_ALLOWANCE *
-            DAYS_IN_A_MONTH
-        );
+        const initalWaterRequired = calculateInitalWaterRequired(account);
+        account.addWater(initalWaterRequired);
+
+        const initalWaterRequiredPrice = calculateInitalWaterPrice(account);
+        account.addCost(initalWaterRequiredPrice);
+
+        const additionalWaterRequired =
+          calculateAdditionalWaterRequired(account);
         account.addWater(additionalWaterRequired);
 
-        const additionalWaterRequiredPrice = determineTankerCost(
+        const additionalWaterRequiredPrice = calculateTankerCost(
           additionalWaterRequired
         );
         account.addCost(additionalWaterRequiredPrice);
@@ -45,6 +39,18 @@ export function printBill(): any {
       }
     }
   };
+}
+
+function calculateAdditionalWaterRequired(account: Account) {
+  return round(
+    account.getAdditionalPeople() * PERSONAL_WATER_ALLOWANCE * DAYS_IN_A_MONTH
+  );
+}
+
+function calculateInitalWaterRequired(account: Account) {
+  return round(
+    account.getInitalPeople() * PERSONAL_WATER_ALLOWANCE * DAYS_IN_A_MONTH
+  );
 }
 
 function calculateInitalWaterPrice(account: Account) {
@@ -59,7 +65,7 @@ function calculateInitalWaterPrice(account: Account) {
   return waterPricePerLiter * account.getWaterAmount();
 }
 
-function determineTankerCost(water: number) {
+function calculateTankerCost(water: number) {
   let cost = 0;
   if (water < 501) {
     cost = 2 * water;

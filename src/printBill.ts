@@ -1,5 +1,6 @@
 import { round } from "lodash";
 import { accounts } from "./accounts";
+import { Account } from "./Account";
 
 const CORPORATION_WATER_RATE = 1;
 const BOREWELL_WATER_RATE = 1.5;
@@ -10,28 +11,52 @@ export function printBill(): any {
   return function (req: any, res: any) {
     for (let account of accounts) {
       if (account.getId() === req.params.accountID) {
-        let corporationContribution =
-          Number(account.getCorporationRatio()) * CORPORATION_WATER_RATE;
-        let borewellContribution =
-          Number(account.getBorewellRatio()) * BOREWELL_WATER_RATE;
-        let ratioAccumulation =
-          Number(account.getCorporationRatio()) +
-          Number(account.getBorewellRatio());
-        let waterPricePerLiter =
-          (corporationContribution + borewellContribution) / ratioAccumulation;
-        let initalWater = round(
-          account.getInitalPeople() * PERSONAL_WATER_ALLOWANCE * DAYS_IN_A_MONTH
+        //api is called twice on the front end to re-render the page, so senond call
+        // is ignored so that account values are not double the value they should be
+        if (account.getWaterAmount() !== 0) {
+          return;
+        }
+        account.addWater(
+          round(
+            account.getInitalPeople() *
+              PERSONAL_WATER_ALLOWANCE *
+              DAYS_IN_A_MONTH
+          )
         );
-        let initalWaterPrice = round(initalWater * waterPricePerLiter);
-        let bill = calculateBill(
-          initalWater,
-          initalWaterPrice,
-          account.getAdditionalPeople()
+
+        let initalWaterPrice = calculateInitalWaterPrice(account);
+        account.addCost(initalWaterPrice);
+        const additionalWaterRequired = round(
+          account.getAdditionalPeople() *
+            PERSONAL_WATER_ALLOWANCE *
+            DAYS_IN_A_MONTH
         );
-        res.json({ waterUsage: bill[0], cost: bill[1] });
+        account.addWater(additionalWaterRequired);
+
+        const additionalWaterRequiredPrice = determineTankerCost(
+          additionalWaterRequired
+        );
+        account.addCost(additionalWaterRequiredPrice);
+
+        res.json({
+          waterUsage: account.getWaterAmount(),
+          cost: account.getCost(),
+        });
       }
     }
   };
+}
+
+function calculateInitalWaterPrice(account: Account) {
+  let corporationContribution =
+    Number(account.getCorporationRatio()) * CORPORATION_WATER_RATE;
+  let borewellContribution =
+    Number(account.getBorewellRatio()) * BOREWELL_WATER_RATE;
+  let ratioAccumulation =
+    Number(account.getCorporationRatio()) + Number(account.getBorewellRatio());
+  let waterPricePerLiter =
+    (corporationContribution + borewellContribution) / ratioAccumulation;
+  return waterPricePerLiter * account.getWaterAmount();
 }
 
 function determineTankerCost(water: number) {
@@ -46,24 +71,4 @@ function determineTankerCost(water: number) {
     cost = 11500 + (water - 3000) * 8;
   }
   return cost;
-}
-
-function calculateBill(
-  initialWater: number,
-  initialWaterPrice: number,
-  peopleAdded: number
-): [number, number] {
-  // Calculation of additional water required and associated cost
-  const additionalWaterRequired = round(
-    peopleAdded * PERSONAL_WATER_ALLOWANCE * DAYS_IN_A_MONTH
-  );
-  const additionalWaterRequiredPrice = determineTankerCost(
-    additionalWaterRequired
-  );
-
-  // Calculation of total water required and associated cost
-  const totalWater = initialWater + additionalWaterRequired;
-  const totalWaterPrice = initialWaterPrice + additionalWaterRequiredPrice;
-
-  return [totalWater, totalWaterPrice];
 }

@@ -55,11 +55,10 @@ function calculateInitalWaterRequired(account: Account) {
 
 function calculateInitalWaterPrice(account: Account) {
   let corporationContribution =
-    Number(account.getCorporationRatio()) * CORPORATION_WATER_RATE;
-  let borewellContribution =
-    Number(account.getBorewellRatio()) * BOREWELL_WATER_RATE;
+    account.getCorporationRatio() * CORPORATION_WATER_RATE;
+  let borewellContribution = account.getBorewellRatio() * BOREWELL_WATER_RATE;
   let ratioAccumulation =
-    Number(account.getCorporationRatio()) + Number(account.getBorewellRatio());
+    account.getCorporationRatio() + account.getBorewellRatio();
   let waterPricePerLiter =
     (corporationContribution + borewellContribution) / ratioAccumulation;
   return waterPricePerLiter * account.getWaterAmount();

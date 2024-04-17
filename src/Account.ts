@@ -3,16 +3,16 @@ import { random } from "lodash";
 export class Account {
   private id: string;
   private appartmentType: string;
-  private corporationRatio: string;
-  private borewellRatio: string;
+  private corporationRatio: number;
+  private borewellRatio: number;
   private initalPeople: number;
   private additionalPeople: number;
   private waterAmmount: number;
   private cost: number;
   constructor(
     appartmentType: string,
-    corporationRatio: string,
-    borewellRatio: string
+    corporationRatio: number,
+    borewellRatio: number
   ) {
     this.id = String(random(1, 99999));
     this.appartmentType = appartmentType;

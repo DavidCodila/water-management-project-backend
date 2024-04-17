@@ -1,16 +1,17 @@
-import { accounts } from "./accounts";
+import { errorAccount } from "./errorAccount";
+import { getAccountById } from "./getAccountById";
 
 export function addPeopleToAccount(): any {
   return function (req: any, res: any) {
-    for (let account of accounts) {
-      if (account.getId() === req.params.accountID) {
-        account.addPeople(Number(req.body.peopleToAdd));
-        res.json({
-          response:
-            "The number of people in this account is: " +
-            account.getAdditionalPeople(),
-        });
-      }
+    const account = getAccountById(req.params.accountID);
+    if (account === errorAccount) {
+      return;
     }
+    account.addPeople(Number(req.body.peopleToAdd));
+    res.json({
+      response:
+        "The number of people in this account is: " +
+        account.getAdditionalPeople(),
+    });
   };
 }

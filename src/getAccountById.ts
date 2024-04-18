@@ -1,6 +1,5 @@
 import { Account } from "./Account";
 import { accounts } from "./accounts";
-import { errorAccount } from "./errorAccount";
 
 export function getAccountById(requiredId: string): Account {
   for (let account of accounts) {
@@ -8,5 +7,5 @@ export function getAccountById(requiredId: string): Account {
       return account;
     }
   }
-  return errorAccount;
+  return {} as Account;
 }

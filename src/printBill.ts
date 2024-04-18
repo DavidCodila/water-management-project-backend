@@ -1,19 +1,18 @@
 import { round } from "lodash";
 import { Account } from "./Account";
 import { getAccountById } from "./getAccountById";
-import { errorAccount } from "./errorAccount";
 
 const CORPORATION_WATER_RATE = 1;
 const BOREWELL_WATER_RATE = 1.5;
-const PERSONAL_WATER_ALLOWANCE = 10;
-const DAYS_IN_A_MONTH = 30;
+export const PERSONAL_WATER_ALLOWANCE = 10;
+export const DAYS_IN_A_MONTH = 30;
 
 export function printBill(): any {
   return function (req: any, res: any) {
     const account = getAccountById(req.params.accountID);
     //api is called twice on the front end to re-render the page, so second call
     // is ignored so that account values are not double the value they should be
-    if (account.getWaterAmount() !== 0 || account === errorAccount) {
+    if (account.getWaterAmount() !== 0 || account === ({} as Account)) {
       return;
     }
 
@@ -23,7 +22,7 @@ export function printBill(): any {
     const initalWaterRequiredPrice = calculateInitalWaterPrice(account);
     account.addCost(initalWaterRequiredPrice);
 
-    const additionalWaterRequired = calculateAdditionalWaterRequired(account);
+    const additionalWaterRequired = account.calculateAdditionalWaterRequired();
     account.addWater(additionalWaterRequired);
 
     const additionalWaterRequiredPrice = calculateAdditionalWaterRequiredPrice(
@@ -36,12 +35,6 @@ export function printBill(): any {
       cost: account.getCost(),
     });
   };
-}
-
-function calculateAdditionalWaterRequired(account: Account) {
-  return round(
-    account.getAdditionalPeople() * PERSONAL_WATER_ALLOWANCE * DAYS_IN_A_MONTH
-  );
 }
 
 function calculateInitalWaterRequired(account: Account) {

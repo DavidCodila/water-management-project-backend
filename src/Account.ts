@@ -1,4 +1,5 @@
-import { random } from "lodash";
+import { random, round } from "lodash";
+import { PERSONAL_WATER_ALLOWANCE, DAYS_IN_A_MONTH } from "./printBill";
 
 export class Account {
   private id: string;
@@ -57,5 +58,10 @@ export class Account {
   }
   addWater(waterAmountToAdd: number) {
     this.waterAmmount += waterAmountToAdd;
+  }
+  calculateAdditionalWaterRequired() {
+    return round(
+      this.additionalPeople * PERSONAL_WATER_ALLOWANCE * DAYS_IN_A_MONTH
+    );
   }
 }

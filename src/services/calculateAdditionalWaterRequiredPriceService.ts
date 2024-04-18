@@ -1,4 +1,4 @@
-export function calculateAdditionalWaterRequiredPrice(water: number) {
+export function calculateAdditionalWaterRequiredPriceService(water: number) {
   let cost = 0;
   if (water < 501) {
     cost = 2 * water;

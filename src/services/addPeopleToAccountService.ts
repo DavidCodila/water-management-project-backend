@@ -1,9 +1,9 @@
 import { account } from "../models/account";
-import { getAccountById } from "./getAccountByIdService";
+import { getAccountByIdService } from "./getAccountByIdService";
 
-export function addPeopleToAccount(): any {
+export function addPeopleToAccountService(): any {
   return function (req: any, res: any) {
-    const account = getAccountById(req.params.accountID);
+    const account = getAccountByIdService(req.params.accountID);
     if (account === ({} as account)) {
       //TODO - add error code
       return;

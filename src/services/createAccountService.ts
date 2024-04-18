@@ -1,7 +1,7 @@
 import { accounts } from "../models/accounts";
 import { account } from "../models/account";
 
-export function createAccount(): any {
+export function createAccountService(): any {
   return function (req: any, res: any) {
     const newAccount = new account(
       req.body.appartmentType,

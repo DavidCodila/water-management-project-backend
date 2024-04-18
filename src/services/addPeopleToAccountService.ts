@@ -1,5 +1,5 @@
 import { account } from "../models/account";
-import { getAccountById } from "./getAccountById";
+import { getAccountById } from "./getAccountByIdService";
 
 export function addPeopleToAccount(): any {
   return function (req: any, res: any) {

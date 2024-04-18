@@ -1,8 +1,11 @@
 import { random, round } from "lodash";
-import {
-  PERSONAL_WATER_ALLOWANCE,
-  DAYS_IN_A_MONTH,
-} from "../services/printBill";
+
+const CORPORATION_WATER_RATE = 1;
+const BOREWELL_WATER_RATE = 1.5;
+const PERSONAL_WATER_ALLOWANCE = 10;
+const DAYS_IN_A_MONTH = 30;
+const PERSONAL_WATER_ALLOWANCE_PER_MONTH =
+  PERSONAL_WATER_ALLOWANCE * DAYS_IN_A_MONTH;
 
 export class account {
   private id: string;
@@ -62,9 +65,22 @@ export class account {
   addWater(waterAmountToAdd: number) {
     this.waterAmmount += waterAmountToAdd;
   }
+  calculateInitalWaterRequired() {
+    return round(this.initalPeople * PERSONAL_WATER_ALLOWANCE_PER_MONTH);
+  }
+  calculateInitalWaterPrice() {
+    const waterPricePerLiter = this.calculateWaterPricePerLitre();
+    return waterPricePerLiter * this.getWaterAmount();
+  }
+  calculateWaterPricePerLitre(): number {
+    let corporationContribution =
+      this.getCorporationRatio() * CORPORATION_WATER_RATE;
+    let borewellContribution = this.getBorewellRatio() * BOREWELL_WATER_RATE;
+    let ratioAccumulation =
+      this.getCorporationRatio() + this.getBorewellRatio();
+    return (corporationContribution + borewellContribution) / ratioAccumulation;
+  }
   calculateAdditionalWaterRequired() {
-    return round(
-      this.additionalPeople * PERSONAL_WATER_ALLOWANCE * DAYS_IN_A_MONTH
-    );
+    return round(this.additionalPeople * PERSONAL_WATER_ALLOWANCE_PER_MONTH);
   }
 }

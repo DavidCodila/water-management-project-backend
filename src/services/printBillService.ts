@@ -5,6 +5,10 @@ import { getAccountByIdService } from "./getAccountByIdService";
 export function printBillService(): any {
   return function (req: any, res: any) {
     const account = getAccountByIdService(req.params.accountID);
+    if (account === null) {
+      //TODO - error code
+      return;
+    }
     //api is called twice on the front end to re-render the page, so second call
     // is ignored so that account values are not double the value they should be
     if (account.getWaterAmount() !== 0 || account === ({} as account)) {

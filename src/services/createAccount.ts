@@ -1,5 +1,5 @@
-import { accounts } from "./accounts";
-import { account } from "./account";
+import { accounts } from "../models/accounts";
+import { account } from "../models/account";
 
 export function createAccount(): any {
   return function (req: any, res: any) {

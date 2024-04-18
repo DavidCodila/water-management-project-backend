@@ -1,5 +1,5 @@
 import { round } from "lodash";
-import { account } from "./account";
+import { account } from "../models/account";
 import { getAccountById } from "./getAccountById";
 
 const CORPORATION_WATER_RATE = 1;

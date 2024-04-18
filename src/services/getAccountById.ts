@@ -1,5 +1,5 @@
-import { account } from "./account";
-import { accounts } from "./accounts";
+import { account } from "../models/account";
+import { accounts } from "../models/accounts";
 
 export function getAccountById(requiredId: string): account {
   for (let account of accounts) {

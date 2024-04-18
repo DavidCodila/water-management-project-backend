@@ -1,4 +1,4 @@
-import { account } from "./account";
+import { account } from "../models/account";
 import { getAccountById } from "./getAccountById";
 
 export function addPeopleToAccount(): any {

@@ -1,9 +1,9 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import { createAccount } from "./createAccount";
-import { addPeopleToAccount } from "./addPeopleToAccount";
-import { printBill } from "./printBill";
+import { createAccount } from "../services/createAccount";
+import { addPeopleToAccount } from "../services/addPeopleToAccount";
+import { printBill } from "../services/printBill";
 
 const app = express();
 

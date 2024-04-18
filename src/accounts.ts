@@ -1,3 +1,3 @@
-import { Account } from "./Account";
+import { account } from "./account";
 
-export const accounts: Account[] = [];
+export const accounts: account[] = [];

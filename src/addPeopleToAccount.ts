@@ -1,10 +1,10 @@
-import { Account } from "./Account";
+import { account } from "./account";
 import { getAccountById } from "./getAccountById";
 
 export function addPeopleToAccount(): any {
   return function (req: any, res: any) {
     const account = getAccountById(req.params.accountID);
-    if (account === ({} as Account)) {
+    if (account === ({} as account)) {
       //TODO - add error code
       return;
     }

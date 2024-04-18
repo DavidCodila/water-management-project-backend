@@ -1,7 +1,7 @@
 import { random, round } from "lodash";
 import { PERSONAL_WATER_ALLOWANCE, DAYS_IN_A_MONTH } from "./printBill";
 
-export class Account {
+export class account {
   private id: string;
   private appartmentType: string;
   private corporationRatio: number;

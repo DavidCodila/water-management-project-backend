@@ -1,5 +1,5 @@
 import { round } from "lodash";
-import { Account } from "./Account";
+import { account } from "./account";
 import { getAccountById } from "./getAccountById";
 
 const CORPORATION_WATER_RATE = 1;
@@ -12,7 +12,7 @@ export function printBill(): any {
     const account = getAccountById(req.params.accountID);
     //api is called twice on the front end to re-render the page, so second call
     // is ignored so that account values are not double the value they should be
-    if (account.getWaterAmount() !== 0 || account === ({} as Account)) {
+    if (account.getWaterAmount() !== 0 || account === ({} as account)) {
       return;
     }
 
@@ -37,18 +37,18 @@ export function printBill(): any {
   };
 }
 
-function calculateInitalWaterRequired(account: Account) {
+function calculateInitalWaterRequired(account: account) {
   return round(
     account.getInitalPeople() * PERSONAL_WATER_ALLOWANCE * DAYS_IN_A_MONTH
   );
 }
 
-function calculateInitalWaterPrice(account: Account) {
+function calculateInitalWaterPrice(account: account) {
   const waterPricePerLiter = calculateWaterPricePerLitre(account);
   return waterPricePerLiter * account.getWaterAmount();
 }
 
-function calculateWaterPricePerLitre(account: Account): number {
+function calculateWaterPricePerLitre(account: account): number {
   let corporationContribution =
     account.getCorporationRatio() * CORPORATION_WATER_RATE;
   let borewellContribution = account.getBorewellRatio() * BOREWELL_WATER_RATE;

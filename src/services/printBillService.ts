@@ -1,36 +1,29 @@
 import { account } from "../models/account";
-import { calculateAdditionalWaterRequiredPriceService } from "./calculateAdditionalWaterRequiredPriceService";
+import { canNotFindAccountIdError } from "./canNotFindAccountIdError";
 import { getAccountByIdService } from "./getAccountByIdService";
 
 export function printBillService(): any {
   return function (req: any, res: any) {
-    const account = getAccountByIdService(req.params.accountID);
+    const requiredAccountId = req.params.accountID;
+    const account = getAccountByIdService(requiredAccountId);
     if (account === null) {
-      //TODO - error code
+      canNotFindAccountIdError(res, requiredAccountId);
       return;
-    }
-    //api is called twice on the front end to re-render the page, so second call
-    // is ignored so that account values are not double the value they should be
-    if (account.getWaterAmount() !== 0 || account === ({} as account)) {
-      return;
-    }
+    } else if (pageRerender(account)) return; //api is called twice on the front end to re-render the page
 
-    const initalWaterRequired = account.calculateInitalWaterRequired();
-    account.addWater(initalWaterRequired);
-
-    const initalWaterRequiredPrice = account.calculateInitalWaterPrice();
-    account.addCost(initalWaterRequiredPrice);
-
-    const additionalWaterRequired = account.calculateAdditionalWaterRequired();
-    account.addWater(additionalWaterRequired);
-
-    const additionalWaterRequiredPrice =
-      calculateAdditionalWaterRequiredPriceService(additionalWaterRequired);
-    account.addCost(additionalWaterRequiredPrice);
+    account.setTotalWaterAmount();
+    account.setTotalCost();
 
     res.json({
-      waterUsage: account.getWaterAmount(),
+      waterUsage: account.getWaterUsage(),
       cost: account.getCost(),
     });
   };
+}
+
+function pageRerender(account: account): boolean {
+  if (account.getWaterUsage() !== 0) {
+    return true;
+  }
+  return false;
 }

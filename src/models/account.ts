@@ -1,4 +1,5 @@
 import { random, round } from "lodash";
+import { calculateAdditionalWaterRequiredPriceService } from "../services/calculateAdditionalWaterRequiredPriceService";
 
 const CORPORATION_WATER_RATE = 1;
 const BOREWELL_WATER_RATE = 1.5;
@@ -14,7 +15,8 @@ export class account {
   private borewellRatio: number;
   private initalPeople: number;
   private additionalPeople: number;
-  private waterAmmount: number;
+  private initalWaterAmmount: number;
+  private additionalWaterAmount: number;
   private cost: number;
   constructor(
     appartmentType: string,
@@ -29,7 +31,8 @@ export class account {
       this.initalPeople = 3;
     } else this.initalPeople = 5;
     this.additionalPeople = 0;
-    this.waterAmmount = 0;
+    this.initalWaterAmmount = 0;
+    this.additionalWaterAmount = 0;
     this.cost = 0;
   }
   getId() {
@@ -50,8 +53,11 @@ export class account {
   getAdditionalPeople() {
     return this.additionalPeople;
   }
-  getWaterAmount() {
-    return this.waterAmmount;
+  getInitalWaterAmount() {
+    return this.initalWaterAmmount;
+  }
+  getAdditionalWaterAmount() {
+    return this.additionalWaterAmount;
   }
   getCost() {
     return this.cost;
@@ -62,15 +68,21 @@ export class account {
   addPeople(peopleToAdd: number) {
     this.additionalPeople += peopleToAdd;
   }
-  addWater(waterAmountToAdd: number) {
-    this.waterAmmount += waterAmountToAdd;
+  addInitalWater(waterAmountToAdd: number) {
+    this.initalWaterAmmount += waterAmountToAdd;
+  }
+  addAdditionalWater(waterAmountToAdd: number) {
+    this.additionalWaterAmount += waterAmountToAdd;
+  }
+  getWaterUsage() {
+    return this.initalWaterAmmount + this.additionalWaterAmount;
   }
   calculateInitalWaterRequired() {
     return round(this.initalPeople * PERSONAL_WATER_ALLOWANCE_PER_MONTH);
   }
   calculateInitalWaterPrice() {
     const waterPricePerLiter = this.calculateWaterPricePerLitre();
-    return waterPricePerLiter * this.getWaterAmount();
+    return waterPricePerLiter * this.getInitalWaterAmount();
   }
   calculateWaterPricePerLitre(): number {
     let corporationContribution =
@@ -82,5 +94,22 @@ export class account {
   }
   calculateAdditionalWaterRequired() {
     return round(this.additionalPeople * PERSONAL_WATER_ALLOWANCE_PER_MONTH);
+  }
+  setTotalWaterAmount() {
+    const initalWaterRequired = this.calculateInitalWaterRequired();
+    this.addInitalWater(initalWaterRequired);
+
+    const additionalWaterRequired = this.calculateAdditionalWaterRequired();
+    this.addAdditionalWater(additionalWaterRequired);
+  }
+  setTotalCost() {
+    const initalWaterRequiredPrice = this.calculateInitalWaterPrice();
+    this.addCost(initalWaterRequiredPrice);
+
+    const additionalWaterRequiredPrice =
+      calculateAdditionalWaterRequiredPriceService(
+        this.calculateAdditionalWaterRequired()
+      );
+    this.addCost(additionalWaterRequiredPrice);
   }
 }

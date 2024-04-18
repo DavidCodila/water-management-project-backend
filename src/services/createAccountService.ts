@@ -8,7 +8,11 @@ export function createAccountService(): any {
       Number(req.body.corporationRatio),
       Number(req.body.borewellRatio)
     );
-    accounts.push(newAccount);
+    saveAccountToMemory(newAccount);
     res.json({ accountId: newAccount.getId() });
   };
+}
+
+function saveAccountToMemory(account: account) {
+  accounts.push(account);
 }

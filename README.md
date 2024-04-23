@@ -7,4 +7,4 @@
   <li>npm install</li>
   <li>npm run start:dev</li>
 </ol>
-<p>note: The backend application can be found here: https://github.com/TunaSalad343/water-management-project-frontend/tree/main</p>
+<p>note: The frontend application can be found here: https://github.com/TunaSalad343/water-management-project-frontend/tree/main</p>

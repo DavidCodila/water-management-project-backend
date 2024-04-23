@@ -1,4 +1,4 @@
-<h1>Server side code for water management project</h1>
+<h1>Server side application for water management project</h1>
 <p>This application is a Localhost express server writter in typescript. The purpose of this application is to provide RESTful API service for the frontend water management applicaton. </p>
 <h3>How to install and run the project</h3>
 <ol>
